@@ -1,0 +1,62 @@
+.container {
+    width: 100%;
+}
+
+.container:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column {
+    width: 50%;
+    float: left;
+}
+
+.example--original {
+    width: 100%;
+    height: auto;
+}
+
+.example {
+    width: 100%;
+    height: auto;
+}
+
+.sketch {
+    width: 100%;
+    position: relative;
+}
+
+.sketch__inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sketch__canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.sketch--1 {
+    /* (W)210mm (H)297mm = (297 / 210) * 100 */
+    padding-top: 141.42857142857144%;
+}
+
+.sketch--2 {
+    /* (W)210mm (H)297mm = (297 / 210) * 100 */
+    padding-top: 141.42857142857144%;
+}
+
+.sketch--3 {
+    /* (W)210mm (H)297mm = (297 / 210) * 100 */
+    padding-top: 141.42857142857144%;
+}
+
+.sketch--4 {
+    /* (W)210mm (H)297mm = (297 / 210) * 100 */
+    padding-top: 141.42857142857144%;
+}

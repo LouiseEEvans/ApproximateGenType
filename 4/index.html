@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>4: Not Exactly</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" type="text/css" rel="stylesheet">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-full.js"></script>
+    <script src="../colors.js"></script>
+    <script type="text/paperscript" canvas="sketch-4">
+
+(function () {
+
+function randomColor () {
+  return palette1[Math.round(Math.random() * (palette1.length - 1))];
+}
+
+function renderGlyphs (input, opts) {
+  var group = [];
+
+  var color = randomColor();
+
+  var cs = input.children.filter(function (c) {
+    return !c.bounds.equals(input.bounds);
+  });
+
+  var origin = new Point(0, 0);
+  cs.sort(function (bShape, aShape) {
+    var a = aShape.position.getDistance(origin);
+    var b = bShape.position.getDistance(origin);
+    return b - a;
+  });
+
+  cs.forEach(function (child) {
+    var t = 0;
+    var startOpacity = 0.1;
+    var o = startOpacity;
+
+    var its = 90;
+    var r = 100;
+    var angle = 0;
+
+    for (var i = 0; i < its; ++i) {
+      var c = child.clone();
+
+      var x = Math.cos(t) * r;
+      var y = Math.sin(t) * r;
+
+      c.fillColor = 'rgba(255, 255, 255, ' + o + ')';
+
+      if (i === its - 1) {
+        c.fillColor = color;
+        c.blendMode = 'normal';
+        c.bringToFront();
+      }
+
+      c.translate(new Point(x, y));
+
+      t += (Math.PI / 2) / its;
+      o += (1 - startOpacity) / its;
+      angle += 360 / its;
+      group.push(c);
+    }
+  });
+
+  return new Group(group);
+}
+
+paper.project.importSVG("4.svg", {
+  insert: false,
+  onLoad: function (input) {
+    var rect = new Path.Rectangle({
+      point: [0, 0],
+      size: [view.size.width, view.size.height],
+      blendMode: 'normal'
+    });
+
+    rect.sendToBack();
+    rect.fillColor = randomColor();
+
+    input.fitBounds(view.bounds);
+    input.position = view.center;
+
+    renderGlyphs(input, {
+      iterations: 20,
+      skip: 0.2,
+      scale: 2,
+      translate: 25,
+      opacity: 2,
+      simplify: 500
+    });
+  }
+});
+
+}());
+
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="column">
+        <img class="example example--original" src="4.svg">
+      </div>
+      <div class="column">
+        <div class="sketch sketch--4">
+          <div class="sketch__inner">
+            <canvas class="sketch__canvas" id="sketch-4" resize></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>1: Permission To Be Vague</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" type="text/css" rel="stylesheet">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-full.js"></script>
+    <script src="../colors.js"></script>
+    <script type="text/paperscript" canvas="sketch-1">
+
+(function () {
+
+function fixedColor () {
+  return 'rgba(255, 255, 255, 0.5)';
+}
+
+function randomColor () {
+  return palette2[Math.round(Math.random() * (palette2.length - 1))];
+}
+
+function randomBlendMode () {
+  var modes = [
+    'normal',
+    'multiply',
+    'screen',
+    'overlay'
+
+  ];
+
+  var mode = modes[Math.round(Math.random() * (modes.length - 1))];
+  return mode;
+}
+
+function randomDelta (weight) {
+  weight = weight || 25;
+  var half = weight / 2;
+  return [
+    (Math.random() * weight) - half,
+    (Math.random() * weight) - half
+  ];
+}
+
+function randomAngle () {
+  return (Math.random() > 0.25) ? 0 : 180;
+}
+
+function randomScale (weight) {
+  return Math.random() * (weight || 2.0);
+}
+
+function randomOpacity (opacity) {
+  return Math.random() * opacity;
+}
+
+function renderGlyphs (input, opts) {
+  var groups = [];
+
+  for (var i = 0; i < opts.iterations; ++i) {
+    var children = input.children.filter(function () {
+      return Math.random() > opts.skip;
+    }).map(function (c) {
+      var child = c.clone();
+
+      if (Math.random() > 0.5) {
+        child.fillColor = 'rgba(0, 0, 0, 0)';
+        child.strokeColor = randomColor();
+      } else {
+        child.fillCOlor = randomColor();
+      }
+      
+      if (opts.blend) {
+        child.blendMode = randomBlendMode();
+      }
+      if (opts.opacity) {
+        child.opacity = randomOpacity(opts.opacity);
+      }
+
+      if (opts.scale) {
+        child.scale(randomScale(opts.scale));
+      }
+
+      if (opts.translate) {
+        child.translate(new Point(randomDelta(opts.translate)));
+      }
+
+      child.shadowBlur = Math.random() * 25;
+      child.shadowColor = randomColor();
+
+      var angle = Math.random() > 0.5 ? -360 : 360;
+      child.rotate(Math.random() * angle);
+      return child;
+    });
+
+    groups.push(new Group(children));
+  }
+}
+
+function renderPoints (input, color) {
+  var t = 0;
+  return new Group(input.children.reduce(function (children, child) {
+    if (child.bounds.equals(input.bounds)) {
+      // console.log(child.bounds, input.bounds);
+      return children;
+    }
+
+    var c = child.clone();
+    // c.scale(0.75);
+    c.fillColor = color;
+    var angle = Math.random() > 0.5 ? -45 : 45;
+    // c.rotate(angle);
+    t += 3;
+    // c.translate(new Point([0, t]));
+    // c.blendMode = 'add';
+
+    // c.shadowBlur = 10;
+    c.shadowColor = 'white';
+    c.bringToFront();
+    children.push(c);
+    return children;
+  }, []));
+}
+
+paper.project.importSVG("1.svg", {
+  insert: false,
+  onLoad: function (input) {
+    var bg = randomColor();
+    var rect = new Path.Rectangle({
+      point: [0, 0],
+      size: [view.size.width, view.size.height],
+      blendMode: 'normal'
+    });
+
+    rect.sendToBack();
+    rect.fillColor = bg;
+
+    input.fitBounds(view.bounds);
+    input.position = view.center;
+
+    renderGlyphs(input, {
+      noFill: true,
+      blend: true,
+      iterations: 100,
+      skip: 0.85,
+      scale: 1.75,
+      translate: 0,
+      opacity: 0.5,
+      dash: 25,
+    });
+
+    renderPoints(input, bg);
+  }
+});
+
+}());
+
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="column">
+        <img class="example example--original" src="1.svg">
+      </div>
+      <div class="column">
+        <div class="sketch sketch--1">
+          <div class="sketch__inner">
+            <canvas class="sketch__canvas" id="sketch-1" resize></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
