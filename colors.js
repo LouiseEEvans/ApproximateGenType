@@ -1,5 +1,5 @@
 var palette1 = [
-  '#00ffde',
+  '#03fbdb',
   '#ec0030',
   '#01c49c',
   '#bdd4cf',
